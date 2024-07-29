@@ -1,22 +1,9 @@
-// import { fakeData as notes } from "../assets/fakeData";
+import { useContext } from "react";
 import NoteCard from "../components/NoteCard";
-import { useState, useEffect } from "react";
-import { db } from "../appwrite/databases";
+import { NoteContext } from "../context/NoteContext";
 const NotesPage = () => {
 
-  const [notes, setNotes] = useState([]);
-
-  useEffect(()=>{
-    init();
-  }, [])
-
-  const init = async ()=>{
-    const response = await db.notes.list();
-    setNotes(response.documents)
-
-
-    // console.log(response);
-  }
+  const {notes} = useContext(NoteContext);
 
   return (
     <div>

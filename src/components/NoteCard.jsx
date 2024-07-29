@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import { useRef, useEffect, useState } from "react";
 import Trash from "../icons/trash";
-import { setNewOffset, autoGrow, setZIndex } from "../utils";
+import { setNewOffset, autoGrow, setZIndex, bodyParcer } from "../utils";
 const NoteCard = ({note}) => {
 
-    const body = JSON.parse(note.body);
+    const body = bodyParcer(note.body);
     const [position, setPosition] = useState(JSON.parse(note.position));
     const colors = JSON.parse(note.colors);
 

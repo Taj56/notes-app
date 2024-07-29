@@ -2,7 +2,12 @@
 import { useRef, useEffect, useState } from "react";
 import Trash from "../icons/trash";
 import { setNewOffset, autoGrow, setZIndex, bodyParcer } from "../utils";
+import { db } from "../appwrite/databases";
+import Spinner from "../icons/Spinner";
 const NoteCard = ({note}) => {
+
+    const [saving, setSaving] = useState(false);
+    const keyUpTimer = useRef(null);
 
     const body = bodyParcer(note.body);
     const [position, setPosition] = useState(JSON.parse(note.position));
@@ -47,15 +52,50 @@ const NoteCard = ({note}) => {
     const mouseUp = () => {
         document.removeEventListener("mousemove", mouseMove);
         document.removeEventListener("mouseup", mouseUp);
+
+        const newPositioin = setNewOffset(cardRef.current);
+        saveData('position', newPositioin);
     };
+
+    const saveData = async (key, value)=>{
+        const payload = {[key]:JSON.stringify(value)}
+
+        try {
+            await db.notes.update(note.$id, payload)
+        } catch (error) {
+            console.error(error)
+        }
+
+        setSaving(false);
+    }
+
+    const handleKeyUp = ()=>{
+        setSaving(true);
+
+        if(keyUpTimer.current){
+            clearTimeout(keyUpTimer.current);
+        }
+
+        keyUpTimer.current = setTimeout(()=>{
+            saveData('body', textAreaRef.current.value);
+        }, 2000)
+    }
 
   return (
     <div className="card" ref={cardRef} style={{backgroundColor: colors.colorBody, left: `${position.x}px`, top: `${position.y}px`}}>
         <div className="card-header" onMouseDown={mouseDown} style={{backgroundColor: colors.colorHeader}}>
             <Trash />
+
+                {
+                    saving && (
+                        <div className="card-saving">
+                            <Spinner color={colors.colorText}/>
+                            <span style={{ color: colors.colorText }}>Saving...</span>
+                        </div>
+                    )}
         </div>
         <div className="card-body">
-            <textarea name="" ref={textAreaRef} id="" defaultValue={body} style={{color: colors.colorText}}
+            <textarea onKeyUp={handleKeyUp} name="" ref={textAreaRef} id="" defaultValue={body} style={{color: colors.colorText}}
             onInput={()=> {autoGrow(textAreaRef)}}
             onFocus={()=>{
                 setZIndex(cardRef.current);

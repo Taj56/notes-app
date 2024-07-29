@@ -1,7 +1,6 @@
 // import { fakeData as notes } from "../assets/fakeData";
 import NoteCard from "../components/NoteCard";
 import { useState, useEffect } from "react";
-import { databases } from "../appwrite/config";
 import { db } from "../appwrite/databases";
 const NotesPage = () => {
 
@@ -13,8 +12,6 @@ const NotesPage = () => {
 
   const init = async ()=>{
     const response = await db.notes.list();
-    
-
     setNotes(response.documents)
 
 

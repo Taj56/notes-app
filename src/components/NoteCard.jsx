@@ -1,14 +1,17 @@
 /* eslint-disable react/prop-types */
 import { useRef, useEffect, useState } from "react";
-import Trash from "../icons/trash";
 import { setNewOffset, autoGrow, setZIndex, bodyParcer } from "../utils";
 import { db } from "../appwrite/databases";
 import Spinner from "../icons/Spinner";
 import DeleteButton from "./DeleteButton";
+import { useContext } from "react";
+import { NoteContext } from "../context/NoteContext";
 const NoteCard = ({note}) => {
 
     const [saving, setSaving] = useState(false);
     const keyUpTimer = useRef(null);
+
+    const {setSelectedNote} = useContext(NoteContext);
 
     const body = bodyParcer(note.body);
     const [position, setPosition] = useState(JSON.parse(note.position));
@@ -36,6 +39,7 @@ const NoteCard = ({note}) => {
             document.addEventListener("mouseup", mouseUp);
     
             setZIndex(cardRef.current);
+            setSelectedNote(note);
         }
     }
 
@@ -104,6 +108,7 @@ const NoteCard = ({note}) => {
             onInput={()=> {autoGrow(textAreaRef)}}
             onFocus={()=>{
                 setZIndex(cardRef.current);
+                setSelectedNote(note);
             }}
             >
 

@@ -8,6 +8,7 @@ const NoteProvider = ({children}) => {
 
     const [notes, setNotes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedNote, setSelectedNote] = useState(null);
 
     useEffect(()=>{
         init();
@@ -19,7 +20,7 @@ const NoteProvider = ({children}) => {
         setLoading(false)
       }
 
-    const contextData = {notes, setNotes}
+    const contextData = {notes, setNotes, selectedNote, setSelectedNote}
 
     return (<NoteContext.Provider value={contextData}>
         {loading ? (

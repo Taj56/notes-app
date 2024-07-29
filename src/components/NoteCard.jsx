@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { useRef, useEffect, useState } from "react";
 import Trash from "../icons/trash";
-import { setNewOffset } from "../utils";
+import { setNewOffset, autoGrow, setZIndex } from "../utils";
 const NoteCard = ({note}) => {
 
     const body = JSON.parse(note.body);
@@ -17,13 +17,7 @@ const NoteCard = ({note}) => {
         autoGrow(textAreaRef);
     }, [])
 
-    const autoGrow = (textAreaRef)=>{
-        const {current} = textAreaRef;
-
-        current.style.height = "auto"; // Reset the height
-        current.style.height = current.scrollHeight + "px"; // Set the new height
-
-    };
+    
 
     const mouseDown = (e) => {
         mouseStartPos.x = e.clientX; 
@@ -31,6 +25,8 @@ const NoteCard = ({note}) => {
 
         document.addEventListener("mousemove", mouseMove);
         document.addEventListener("mouseup", mouseUp);
+
+        setZIndex(cardRef.current);
     }
 
     const mouseMove = (e) => {
@@ -61,6 +57,9 @@ const NoteCard = ({note}) => {
         <div className="card-body">
             <textarea name="" ref={textAreaRef} id="" defaultValue={body} style={{color: colors.colorText}}
             onInput={()=> {autoGrow(textAreaRef)}}
+            onFocus={()=>{
+                setZIndex(cardRef.current);
+            }}
             >
 
             </textarea>
